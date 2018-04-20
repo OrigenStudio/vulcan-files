@@ -38,11 +38,14 @@ class Upload extends PureComponent {
 
     const { previewUrl = () => '' } = props.options || {};
     const preview = this.enableMultiple()
-      ? (props.value || []).map(file => ({
+      ? (props.value || []).map((file, index) => ({
           name: file.filename,
-          url: previewUrl(props.document, _id),
+          url: previewUrl(file, index, props),
         }))
-      : { name: props.value.filename, url: previewUrl(props.document) };
+      : {
+          name: props.value.filename,
+          url: previewUrl(props.value, 0, props),
+        };
     const isEmpty = this.enableMultiple()
       ? props.value.length === 0
       : !props.value && !preview;
@@ -220,6 +223,7 @@ class Upload extends PureComponent {
                         key={index}
                         index={index}
                         file={file}
+                        preview={this.state.preview[index]}
                         {...props}
                       />
                     ))
@@ -227,6 +231,7 @@ class Upload extends PureComponent {
                     <FileRender
                       clearFile={this.clearFile}
                       file={fileData}
+                      preview={this.state.preview}
                       {...props}
                     />
                   )}

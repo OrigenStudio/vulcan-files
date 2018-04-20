@@ -14,7 +14,7 @@ const getImageUrl = imageOrImageArray => {
     ? imageOrImageArray[0]
     : imageOrImageArray;
   // if image is an object, return secure_url; else return image itself
-  return typeof image === 'string' ? image : image.url;
+  return typeof image === 'string' ? image : image.url || image.preview;
 };
 
 class Image extends PureComponent {
@@ -23,13 +23,17 @@ class Image extends PureComponent {
     this.props.clearFile(this.props.index);
   };
 
+  getImageUrl = () => {
+    return getImageUrl(this.props.preview || this.props.file);
+  };
+
   render() {
     const { removeMessage = 'remove' } = this.props;
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <img
           style={{ height: 160, marginRight: '16px' }}
-          src={getImageUrl(this.props.file)}
+          src={this.getImageUrl()}
           alt="uploaded"
         />
         <a href="javascript:void(0)" onClick={this.clearImage}>
