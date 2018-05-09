@@ -1,15 +1,20 @@
 /**
  * Stolen from vulcan:forms. Modified to work with GraphQL `File` scalars.
  */
+import getContext from 'recompose/getContext';
 import upperFirst from 'lodash/upperFirst';
 import map from 'lodash/map';
 import reject from 'lodash/reject';
 import isEmpty from 'lodash/isEmpty';
 import reduce from 'lodash/reduce';
+import get from 'lodash/get';
+import isString from 'lodash/get';
+import stubTrue from 'lodash/stubTrue';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import 'isomorphic-fetch'; // patch for browser which don't have fetch implemented
+
 /*
 Remove the nth item from an array
 */
@@ -26,51 +31,29 @@ class Upload extends PureComponent {
     name: PropTypes.string,
     value: PropTypes.any,
     label: PropTypes.string,
+    fileCheck: PropTypes.func,
+    FileRender: PropTypes.func.isRequired,
+    previewFromValue: PropTypes.func,
+    previewFromFile: PropTypes.func,
   };
 
-  static contextTypes = {
-    addToAutofilledValues: PropTypes.func,
-    getDocument: PropTypes.func,
+  static defaultProps = {
+    fileCheck: stubTrue,
+    previewFromValue: () => '',
+    previewFromFile: value => ({
+      name: get(value, 'name', ''),
+      url: get(value, 'preview', ''),
+    }),
   };
+
 
   constructor(props, context) {
     super(props, context);
 
-    const { previewUrl = () => '' } = props.options || {};
-    const preview = this.enableMultiple()
-      ? (props.value || []).map((file, index) => ({
-          name: file.filename,
-          url: previewUrl(file, index, props),
-        }))
-      : {
-          name: props.value.filename,
-          url: previewUrl(props.value, 0, props),
-        };
-    const isEmpty = this.enableMultiple()
-      ? props.value.length === 0
-      : !props.value && !preview;
-    const emptyValue = this.enableMultiple() ? [] : '';
-
     this.state = {
-      preview,
       uploading: false,
-      value: isEmpty ? emptyValue : props.value,
       errorMessage: null,
     };
-  }
-
-  /*
-  Add to autofilled values so SmartForms doesn't think the field is empty
-  if the user submits the form without changing it
-  */
-  componentWillMount() {
-    const isEmpty = this.enableMultiple()
-      ? this.props.value.length === 0
-      : !this.props.value;
-    const emptyValue = this.enableMultiple() ? [] : '';
-    this.context.addToAutofilledValues({
-      [this.props.name]: isEmpty ? emptyValue : this.props.value,
-    });
   }
 
   /*
@@ -90,30 +73,13 @@ class Upload extends PureComponent {
     // TODO add max files
 
     if (isEmpty(errors)) {
-      // set the component in upload mode with the preview
-      this.setState(
-        {
-          preview: this.enableMultiple()
-            ? [
-                ...(this.state.preview || {}),
-                ...files.map(file => ({
-                  name: file.name,
-                  url: file.preview,
-                })),
-              ]
-            : { name: files[0].name, url: files[0].preview },
-          value: this.enableMultiple()
-            ? [...this.state.value, ...files]
-            : files[0],
-        },
-        () => {
-          // tell vulcanForm to catch the value
-          this.context.addToAutofilledValues({
-            [this.props.name]: this.state.value,
-          });
-        }
-      );
+      this.props.updateCurrentValues({
+        [this.props.name]: this.enableMultiple()
+          ? [...this.state.value, ...files]
+          : files[0],
+      });
     } else {
+      // TODO better error handling
       // Set error message
       const {
         errorFilesTooBig = 'your file is too big',
@@ -145,25 +111,39 @@ class Upload extends PureComponent {
   Check the field's type to decide if the component should handle
   multiple file uploads or not
   */
-  enableMultiple = () => this.props.datatype.definitions[0].type === Array;
+  enableMultiple = () => (
+    get(props, 'datatype.definitions[0].type') ||
+    get(props, 'datatype[0].type')
+  ) === Array;
+
+  getValue = () => value || (this.enableMultiple() ? [] : '');
 
   /*
   Remove the file at `index` (or just remove file if no index is passed)
   */
   clearFile = index => {
-    window.URL.revokeObjectURL(
-      this.enableMultiple()
-        ? this.state.preview[index].url
-        : this.state.preview.url
-    );
-    const newValue = this.enableMultiple()
-      ? removeNthItem(this.state.value, index)
-      : '';
-    this.context.addToAutofilledValues({ [this.props.name]: newValue });
-    this.setState({
-      preview: newValue,
-      value: newValue,
+    const value = this.enableMultiple()
+      ? get(this.props.value, index)
+      : this.props.value;
+    if (!value) {
+      return;
+    }
+
+    const url = get(this.preview(value, index), 'url');
+    if (url) {
+      window.URL.revokeObjectURL(url);
+    }
+
+    this.props.updateCurrentValues({
+      [this.props.name]: this.enableMultiple()
+        ? removeNthItem(this.props.value, index)
+        : null,
     });
+  };
+
+  preview = (value, index = 0) => {
+    return this.props.previewFromValue(value, index, this.props) ||
+      this.props.previewFromFile(value, index, this.props);
   };
 
   render() {
@@ -173,9 +153,8 @@ class Upload extends PureComponent {
       uploadingMessage = 'Uploading…',
       ...props
     } = this.props;
-    const { uploading, preview, value } = this.state;
-    // show the actual uploaded file or the preview
-    const fileData = preview.url ? preview : value;
+    const value = this.getValue();
+    const { uploading } = this.state;
 
     return (
       <div style={{ padding: '12px 16px' }}>
@@ -186,7 +165,7 @@ class Upload extends PureComponent {
         ) : null}
         <div>
           <div>
-            {isEmpty(fileData) || this.enableMultiple() ? (
+            {isEmpty(value) || this.enableMultiple() ? (
               <Dropzone
                 ref="dropzone"
                 multiple={this.enableMultiple()}
@@ -212,27 +191,27 @@ class Upload extends PureComponent {
               </Dropzone>
             ) : null}
 
-            {!isEmpty(fileData) ? (
+            {!isEmpty(value) ? (
               <div className="upload-state">
                 {uploading ? <span>{uploadingMessage}</span> : null}
                 <div>
                   {this.enableMultiple() ? (
-                    fileData.map((file, index) => (
+                    value.map((value, index) => (
                       <FileRender
-                        clearFile={this.clearFile}
-                        key={index}
-                        index={index}
-                        file={file}
-                        preview={this.state.preview[index]}
                         {...props}
+                        clearFile={this.clearFile}
+                        key={isString(value) ? value : index}
+                        index={index}
+                        value={value}
+                        {...this.preview(value, index)}
                       />
                     ))
                   ) : (
                     <FileRender
                       clearFile={this.clearFile}
-                      file={fileData}
-                      preview={this.state.preview}
+                      value={value}
                       {...props}
+                      {...this.preview(value)}
                     />
                   )}
                 </div>
@@ -256,4 +235,7 @@ class Upload extends PureComponent {
   }
 }
 
-export default Upload;
+export default getContext({
+  updateCurrentValues: PropTypes.func,
+  getDocument: PropTypes.func,
+})(Upload);
