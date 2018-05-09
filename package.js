@@ -1,12 +1,8 @@
 Package.describe({
-  name: 'origen:vulcan-files',
+  name: 'origenstudio:vulcan-files',
   version: '0.0.1',
-  // Brief, one-line summary of the package.
-  summary: 'Provides vulcan with the capability of uploading files to server using Meteor-Files',
-  // URL to the Git repository containing the source code for this package.
+  summary: 'Provides Vulcan with the capability of uploading files to server using Meteor-Files',
   git: 'https://github.com/OrigenStudio/vulcan-files',
-  // By default, Meteor will default to using README.md for documentation.
-  // To avoid submitting documentation, set this field to null.
   documentation: 'README.md'
 });
 
