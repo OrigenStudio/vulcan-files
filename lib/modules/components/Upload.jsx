@@ -112,11 +112,11 @@ class Upload extends PureComponent {
   multiple file uploads or not
   */
   enableMultiple = () => (
-    get(props, 'datatype.definitions[0].type') ||
-    get(props, 'datatype[0].type')
+    get(this.props, 'datatype.definitions[0].type') ||
+    get(this.props, 'datatype[0].type')
   ) === Array;
 
-  getValue = () => value || (this.enableMultiple() ? [] : '');
+  getValue = () => this.props.value || (this.enableMultiple() ? [] : '');
 
   /*
   Remove the file at `index` (or just remove file if no index is passed)
