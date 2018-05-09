@@ -6,15 +6,6 @@ Package.describe({
   documentation: 'README.md'
 });
 
-Npm.depends({
-  'recursive-iterator': '3.3.0',
-  'async-busboy': '0.6.2',
-  'brackets2dots': '1.1.0',
-  'object-path': '0.11.4',
-  'react-dropzone': '4.1.3',
-  'lodash':'4.0.0',
-});
-
 Package.onUse(api => {
   api.versionsFrom('1.6.0.1');
 
