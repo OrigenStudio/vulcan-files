@@ -11,9 +11,9 @@ Package.onUse(api => {
 
   api.use([
     'ecmascript',
-    'vulcan:core',
-    'ostrio:files',
-    'origenstudio:files-helpers'
+    'vulcan:core@1.10.0',
+    'ostrio:files@1.9.11',
+    'origenstudio:files-helpers@0.0.1'
   ]);
 
   api.mainModule('lib/server/main.js', 'server');
