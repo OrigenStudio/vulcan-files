@@ -10,6 +10,11 @@ This package requires Vulcan `1.10.2` or greater.
 
 If you're working with a previous `1.10.x` version, you must install it locally and apply the changes of this [PR](https://github.com/VulcanJS/Vulcan/pull/1982).
 
+### Install the package
+
+In your project's root folder run:
+`meteor add origenstudio:vulcan-files`
+
 ### NPM dependencies
 
 To avoid using `Npm.depends` this package does not include any NPM module, so you will have to install them yourself.
@@ -27,6 +32,8 @@ Here you have a list of the packages and versions required, so you can add them 
     "recursive-iterator": "^3.3.0"
 }
 ```
+
+Make sure you run `meteor npm install
 
 ## 2. Usage
 
