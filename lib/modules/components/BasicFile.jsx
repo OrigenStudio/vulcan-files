@@ -2,7 +2,6 @@
 Display a single file
 */
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { Components } from 'meteor/vulcan:lib';
 
 class BasicFile extends PureComponent {
@@ -16,7 +15,7 @@ class BasicFile extends PureComponent {
 
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: '16px' }}>{this.props.file.name}</span>
+        <span style={{ marginRight: '16px' }}>{this.props.name}</span>
         <a href="javascript:void(0)" onClick={this.clearFile}>
           {removeMessage}
         </a>
