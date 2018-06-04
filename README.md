@@ -6,9 +6,7 @@ Provides Vulcan with the ability to upload files to the server and store them us
 
 ### Vulcan dependency
 
-This package requires Vulcan `1.10.2` or greater.
-
-If you're working with a previous `1.10.x` version, you must install it locally and apply the changes of this [PR](https://github.com/VulcanJS/Vulcan/pull/1982).
+This package requires Vulcan `1.11.0` or greater.
 
 ### Install the package
 
@@ -33,7 +31,7 @@ Here you have a list of the packages and versions required, so you can add them 
 }
 ```
 
-Make sure you run `meteor npm install
+Make sure you run `meteor npm install`.
 
 ## 2. Usage
 
@@ -129,4 +127,3 @@ Features:
 - uses default field's value behavior, so only the file id is stored
 - resolves only the file url
 - images will be uploaded to `S3` if config is provided
-.
