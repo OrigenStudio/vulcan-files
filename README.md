@@ -8,8 +8,6 @@ Provides Vulcan with the ability to upload files to the server and store them us
 
 This package requires Vulcan `1.11.0` or greater.
 
-*Note: this package version constraint is set to* `vulcan:core@1.3.0` *due to a [problem when publishing the package](https://github.com/meteor/meteor/issues/9929), so you will have to manually force the version yourself.*
-
 ### Install the package
 
 In your project's root folder run:
