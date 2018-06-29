@@ -16,14 +16,6 @@ import Dropzone from 'react-dropzone';
 import 'isomorphic-fetch'; // patch for browser which don't have fetch implemented
 
 /*
-Remove the nth item from an array
-*/
-const removeNthItem = (array, n) => [
-  ..._.first(array, n),
-  ..._.rest(array, n + 1),
-];
-
-/*
 File Upload component
 */
 class Upload extends PureComponent {
@@ -134,11 +126,11 @@ class Upload extends PureComponent {
       window.URL.revokeObjectURL(url);
     }
 
-    this.props.updateCurrentValues({
-      [this.props.name]: this.enableMultiple()
-        ? removeNthItem(this.props.value, index)
-        : null,
-    });
+    this.props.addToDeletedValues(
+      this.enableMultiple()
+        ? `${this.props.name}[${index}]`
+        : this.props.name,
+    );
   };
 
   preview = (value, index = 0) => {
