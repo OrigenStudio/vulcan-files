@@ -11,8 +11,11 @@ class BasicFile extends PureComponent {
   };
 
   render() {
-    const { removeMessage = 'remove' } = this.props;
+    if (!this.props.value) {
+      return null;
+    }
 
+    const { removeMessage = 'remove' } = this.props;
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <span style={{ marginRight: '16px' }}>{this.props.name}</span>

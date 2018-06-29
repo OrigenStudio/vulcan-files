@@ -11,6 +11,10 @@ class Image extends PureComponent {
   };
 
   render() {
+    if (!this.props.value) {
+      return null;
+    }
+
     const { removeMessage = 'remove' } = this.props;
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
