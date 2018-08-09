@@ -49,6 +49,7 @@ One problem of directly working with [Meteor-Files](https://github.com/VeliovGro
 import { createFSCollection } from 'meteor/origenstudio:vulcan-files';
 
 const MyFSCollection = createFSCollection({
+  typeName: 'MyFSTypeName', // optional, defaults to `collectionName`
   collectionName: 'MyFSCollection',
   // ...other FilesCollection options
 });
@@ -66,11 +67,30 @@ This module provides a `generateFieldSchema` function that will handle many of t
 // TODO add documentation, see `Vulcanstagram` example for now
 ```
 
-### 2.3. Uploading to 3rd parties
+### 2.3. Callback hooks
+
+#### 2.3.1. Upload hooks
+
+##### After upload
+
+Two hooks are executed when a file has been uploaded: 
+
+- `*.upload.after`: runs for all collections 
+- `{typename}.upload.after`: runs with the uploaded file type name
+
+Signature of callbacks added to these hooks:
+
+```
+(fileDocument, { FSCollection }) => fileDocument
+```
+
+Note that these hooks won't reflect any change on the file document (as it has already been saved), but it can be useful to perform side effects.
+
+### 2.4. Uploading to 3rd parties
 
 Right now only Amazon S3 is supported.
 
-#### 2.3.1 Amazon S3
+#### 2.4.1 Amazon S3
 
 You can create an S3 client easily with the `createS3Client` function: you only need to provide it your bucket configuration and your CloudFront domain. As always, a stub function is exported in client so you can use this function anywhere.
 
