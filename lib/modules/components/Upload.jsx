@@ -141,7 +141,7 @@ class Upload extends PureComponent {
     });
   };
 
-  preview = (value, index = 0) => {
+  preview = (value, index = null) => {
     return this.props.previewFromValue(value, index, this.props) ||
       this.props.previewFromFile(value, index, this.props);
   };
