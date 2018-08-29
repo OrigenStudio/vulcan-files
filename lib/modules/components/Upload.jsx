@@ -75,7 +75,7 @@ class Upload extends PureComponent {
     if (isEmpty(errors)) {
       this.props.updateCurrentValues({
         [this.props.name]: this.enableMultiple()
-          ? [...this.state.value, ...files]
+          ? [...this.getValue(), ...files]
           : files[0],
       });
     } else {
