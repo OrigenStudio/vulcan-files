@@ -92,6 +92,59 @@ This package provides an easy integration with third party services, though it d
 
 - Amazon S3: [origenstudio:vulcan-files-s3](https://github.com/OrigenStudio/vulcan-files-s3)
 
+##### Creating custom integrations
+
+You can integrate with your own third party storage provider by setting the `storageProvider` option when creating the files collection. It should have the following shape:
+
+```js
+const storageProvider = {
+  /**
+   * Called when a document is inserted, and it should be used to upload the file
+   * into the storage provider.
+   * 
+   * @param {Collection} FSCollection
+   *  Meteor Files collection
+   * @param {string} documentId
+   *  Id of the inserted file document
+   * @param {Object} versionRef
+   *  Information of the version of the file being uploaded
+   * @return {Promise<any>}
+   */
+  upload: async (FSCollection, documentId, versionRef) => versionRef,
+  /**
+   * Called when a document is deleted, and it should be used to delete the file
+   * from the storage provider.
+   * 
+   * @param {Collection} FSCollection
+   *  Meteor Files collection
+   * @param {string} documentId
+   *  Id of the file document being deleted
+   * @param {Object} versionRef
+   *  Information of the version of the file being deleted
+   * @return {Promise<any>}
+   * @throws Error if could not delete file
+   */
+  delete: async (FSCollection, documentId, versionRef) => versionRef,
+  /**
+   * Called when a document is requested to be served, and it should be used to
+   * serve the file from the storage provider.
+   * 
+   * Note that by returning `false` the standard behavior will be resumed, and
+   * it should be done when the file has not been uploaded (ex: during upload).
+   * 
+   * @param {object} http
+   *  Middleware request instance, as provided by Meteor Files
+   * @param {object} fileRef
+   *  The fileRef of the document to be served
+   * @param {string} version
+   *  The version name of the document to be served
+   * @return {Boolean}
+   *  `true` to intercept request, `false` to continue standard behaviour
+   */
+  serve: (http, fileRef, version) => false,
+};
+```
+
 ## 3. Examples
 
 ### 3.1. Vulcanstagram
