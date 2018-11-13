@@ -88,58 +88,9 @@ Note that these hooks won't reflect any change on the file document (as it has a
 
 ### 2.4. Uploading to 3rd parties
 
-Right now only Amazon S3 is supported.
+This package provides an easy integration with third party services, though it does not include any out of the box. You can integrate with you preferred 3rd party service by using one of the following packages:
 
-#### 2.4.1 Amazon S3
-
-You can create an S3 client easily with the `createS3Client` function: you only need to provide it your bucket configuration and your CloudFront domain. As always, a stub function is exported in client so you can use this function anywhere.
-
-Since you'll want to have your S3 configuration in your settings, you can retrieve them with Vulcan's `getSetting` function.
-
-```json
-{
-  "amazonAWSS3": {
-    "mainBucket": {
-      "cfdomain": "https://yourdomain.cloudfront.net",
-      "client": {
-        "key": "",
-        "secret": "",
-        "region": "eu-west-1",
-        "bucket": "your-bucket-name"
-      }
-    }
-  }
-}
-```
-
-Now you can create the S3 client from your settings:
-
-```js
-import { getSetting } from 'meteor/vulcan:core';
-import { createS3Client } from 'meteor/origenstudio:vulcan-files';
-
-// make sure the path of the settings match your own!
-const s3Client = createS3Client(
-  getSetting('amazonAWSS3.mainBucket.client'),
-  getSetting('amazonAWSS3.mainBucket.cfdomain'),
-);
-
-if (Meteor.isClient) {
-  // is empty object so you can safely retrieve properties from it
-  console.log(s3Client); //-> {}
-}
-
-```
-
-Once you have your client, you can use it to provide the 3rd party function that `createFSCollection` expects:
-
-```js
-const MyFilesS3 = createFSCollection({
-  collectionName: 'MyFilesS3',
-  uploadTo3rdParty: s3Client.upload,
-  deleteFrom3rdParty: s3Client.delete,
-})
-```
+- Amazon S3: [origenstudio:vulcan-files-s3](https://github.com/OrigenStudio/vulcan-files-s3)
 
 ## 3. Examples
 
@@ -151,5 +102,4 @@ Features:
 
 - single file
 - uses default field's value behavior, so only the file id is stored
-- resolves only the file url
 - images will be uploaded to `S3` if config is provided
