@@ -56,6 +56,7 @@ const UploadInput = props => {
     onDrop,
     preview,
     clearFile,
+    dropZoneProps,
     Components
   } = props;
 
@@ -88,6 +89,7 @@ const UploadInput = props => {
                 color: "darkslategrey",
                 cursor: "pointer"
               }}
+              {...dropZoneProps}
             >
               <UploadInputDropZoneContent
                 selectOrDropFilesMessage={selectOrDropFilesMessage}
@@ -111,13 +113,13 @@ const UploadInput = props => {
                     />
                   ))
                 ) : (
-                  <FileRender
-                    clearFile={this.clearFile}
-                    value={value}
-                    {...props}
-                    {...preview(value)}
-                  />
-                )}
+                    <FileRender
+                      clearFile={this.clearFile}
+                      value={value}
+                      {...props}
+                      {...preview(value)}
+                    />
+                  )}
               </div>
             </div>
           ) : null}
@@ -143,7 +145,9 @@ UploadInput.propTypes = {
   clearFile: PropTypes.func.isRequired,
 
   uploading: PropTypes.bool,
-  errorMessage: PropTypes.string
+  errorMessage: PropTypes.string,
+
+  dropZoneProps: PropTypes.object, // additionnal props passed to react-dropzone
 };
 
 /*
@@ -281,9 +285,12 @@ class UploadInputContainer extends PureComponent {
   render() {
     const {
       FileRender,
-      selectOrDropFilesMessage = "Drop a file here, or click to select an file to upload.",
-      uploadingMessage = "Uploading…",
-      Components
+      selectOrDropFilesMessage,
+      uploadingMessage,
+      removeMessage,
+      dropZoneProps = {},
+      label,
+      Components,
     } = this.props;
     const { uploading, errorMessage } = this.state;
     const { UploadInputInner } = Components;
@@ -299,7 +306,10 @@ class UploadInputContainer extends PureComponent {
         onDrop={this.onDrop}
         preview={this.preview}
         errorMessage={errorMessage}
+        removeMessage={removeMessage}
         clearFile={this.clearFile}
+        dropZoneProps={dropZoneProps}
+        label={label}
       />
     );
   }
@@ -327,7 +337,7 @@ const WrappedUploadInputContainer = compose(
       defaultMessage: "your file is too big"
     }),
     removeMessage: intl.formatMessage({
-      id: "remove",
+      id: "fileUpload.remove",
       defaultMessage: "remove"
     })
   })),
