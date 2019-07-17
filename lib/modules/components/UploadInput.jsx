@@ -20,6 +20,7 @@ import { injectIntl } from "react-intl";
 import { compose } from "recompose";
 
 // Visual components
+const UploadInputLayout = ({ children }) => (<div>{children}</div>)
 const UploadInputLabel = ({ label }) => (
   <div style={{ marginBottom: "16px" }}>{upperFirst(label)}</div>
 );
@@ -63,11 +64,12 @@ const UploadInput = props => {
   const {
     UploadInputLabel,
     UploadInputDropZoneContent,
-    UploadInputErrorMessage
+    UploadInputErrorMessage,
+    UploadInputLayout
   } = Components;
 
   return (
-    <div style={{ padding: "12px 16px" }}>
+    <UploadInputLayout>
       {label ? <UploadInputLabel label={label} /> : null}
       <div>
         <div>
@@ -82,7 +84,10 @@ const UploadInput = props => {
               rejectClassName="dropzone-reject"
               style={{
                 minHeight: "100px",
-                backgroundColor: "lightgrey",
+                border: "2px dashed grey",
+                marginTop: "4px",
+                marginBottom: "4px",
+                backgroundColor: "#e1e1e1",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -128,7 +133,7 @@ const UploadInput = props => {
           ) : null}
         </div>
       </div>
-    </div>
+    </UploadInputLayout>
   );
 };
 UploadInput.propTypes = {
@@ -348,6 +353,7 @@ const WrappedUploadInputContainer = compose(
 )(UploadInputContainer);
 
 // registeration
+registerComponent({ name: "UploadInputLayout", component: UploadInputLayout });
 registerComponent({ name: "UploadInputLabel", component: UploadInputLabel });
 registerComponent({
   name: "UploadInputDropZoneContent",
