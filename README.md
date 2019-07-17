@@ -18,7 +18,7 @@ In your project's root folder run:
 To avoid using `Npm.depends` this package does not include any NPM module, so you will have to install them yourself by running the following command:
 
 ```
-meteor npm install async-busboy@^0.6.2 brackets2dots@^1.1.0 lodash@^4.0.0 object-path@^0.11.4 randomstring@^1.1.5 react-dropzone@^3.12.2 recursive-iterator@^3.3.0 knox@^0.9.2 gm@^1.23.1
+meteor npm install lodash@^4.0.0 randomstring@^1.1.5 react-dropzone@^3.12.2 recursive-iterator@^3.3.0 apollo-upload-client@^11.0.0
 ```
 
 Alternatively, here you have a list of the packages and versions required, so you can add them to your project's `package.json`:
