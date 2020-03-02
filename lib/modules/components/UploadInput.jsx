@@ -20,7 +20,7 @@ import { injectIntl } from "react-intl";
 import { compose } from "recompose";
 
 // Visual components
-const UploadInputLayout = ({ children }) => (<div>{children}</div>)
+const UploadInputLayout = ({ children }) => <div>{children}</div>;
 const UploadInputLabel = ({ label }) => (
   <div style={{ marginBottom: "16px" }}>{upperFirst(label)}</div>
 );
@@ -35,7 +35,7 @@ const UploadInputErrorMessage = ({ errrorMessage }) => (
     style={{
       display: "flex",
       justifyContent: "center",
-      color: "red"
+      color: "red",
     }}
   >
     <span>{errorMessage}</span>
@@ -58,14 +58,14 @@ const UploadInput = props => {
     preview,
     clearFile,
     dropZoneProps,
-    Components
+    Components,
   } = props;
 
   const {
     UploadInputLabel,
     UploadInputDropZoneContent,
     UploadInputErrorMessage,
-    UploadInputLayout
+    UploadInputLayout,
   } = Components;
 
   return (
@@ -80,6 +80,7 @@ const UploadInput = props => {
               onDrop={onDrop}
               // accept="image/*" // TODO also add this filtering
               className="dropzone-base"
+              data-cy="dropzone"
               activeClassName="dropzone-active"
               rejectClassName="dropzone-reject"
               style={{
@@ -92,7 +93,7 @@ const UploadInput = props => {
                 justifyContent: "center",
                 alignItems: "center",
                 color: "darkslategrey",
-                cursor: "pointer"
+                cursor: "pointer",
               }}
               {...dropZoneProps}
             >
@@ -118,13 +119,13 @@ const UploadInput = props => {
                     />
                   ))
                 ) : (
-                    <FileRender
-                      clearFile={this.clearFile}
-                      value={value}
-                      {...props}
-                      {...preview(value)}
-                    />
-                  )}
+                  <FileRender
+                    clearFile={this.clearFile}
+                    value={value}
+                    {...props}
+                    {...preview(value)}
+                  />
+                )}
               </div>
             </div>
           ) : null}
@@ -160,7 +161,7 @@ Remove the nth item from an array
 */
 const removeNthItem = (array, n) => [
   ..._.first(array, n),
-  ..._.rest(array, n + 1)
+  ..._.rest(array, n + 1),
 ];
 
 // Container with logic
@@ -175,7 +176,7 @@ class UploadInputContainer extends PureComponent {
     fileCheck: PropTypes.func,
     FileRender: PropTypes.func.isRequired,
     previewFromValue: PropTypes.func,
-    previewFromFile: PropTypes.func
+    previewFromFile: PropTypes.func,
   };
 
   static defaultProps = {
@@ -183,8 +184,8 @@ class UploadInputContainer extends PureComponent {
     previewFromValue: () => "",
     previewFromFile: value => ({
       name: get(value, "name", ""),
-      url: get(value, "preview", "")
-    })
+      url: get(value, "preview", ""),
+    }),
   };
 
   constructor(props, context) {
@@ -192,7 +193,7 @@ class UploadInputContainer extends PureComponent {
 
     this.state = {
       uploading: false,
-      errorMessage: null
+      errorMessage: null,
     };
   }
 
@@ -202,7 +203,7 @@ class UploadInputContainer extends PureComponent {
   onDrop = files => {
     // Reset error state
     this.setState({
-      errorMessage: null
+      errorMessage: null,
     });
 
     // Check that files are valid
@@ -216,14 +217,14 @@ class UploadInputContainer extends PureComponent {
       this.props.updateCurrentValues({
         [this.props.name]: this.enableMultiple()
           ? [...this.getValue(), ...files]
-          : files[0]
+          : files[0],
       });
     } else {
       // TODO better error handling
       // Set error message
       const {
         errorFilesTooBig = "your file is too big",
-        errorFilesNotAllowedType = "your file type is invalid"
+        errorFilesNotAllowedType = "your file type is invalid",
       } = this.props;
 
       this.setState({
@@ -242,7 +243,7 @@ class UploadInputContainer extends PureComponent {
             },
             ""
           )
-        ) // TODO translate
+        ), // TODO translate
       });
     }
   };
@@ -276,7 +277,7 @@ class UploadInputContainer extends PureComponent {
     this.props.updateCurrentValues({
       [this.props.name]: this.enableMultiple()
         ? removeNthItem(this.props.value, index)
-        : null
+        : null,
     });
   };
 
@@ -326,29 +327,29 @@ const WrappedUploadInputContainer = compose(
   withProps(({ intl }) => ({
     selectOrDropFilesMessage: intl.formatMessage({
       id: "fileUpload.selectOrDropFilesMessage",
-      defaultMessage: "Drop a file here, or click to select an file to upload."
+      defaultMessage: "Drop a file here, or click to select an file to upload.",
     }),
 
     uploadingMessage: intl.formatMessage({
       id: "fileUpload.uploadingMessage",
-      defaultMessage: "Uploading..."
+      defaultMessage: "Uploading...",
     }),
     errorFilesNotAllowedType: intl.formatMessage({
       id: "fileUpload.errorFilesNotAllowedType",
-      defaultMessage: "your file type is invalid"
+      defaultMessage: "your file type is invalid",
     }),
     errorFilesTooBig: intl.formatMessage({
       id: "fileUpload.errorFilesTooBig",
-      defaultMessage: "your file is too big"
+      defaultMessage: "your file is too big",
     }),
     removeMessage: intl.formatMessage({
       id: "fileUpload.remove",
-      defaultMessage: "remove"
-    })
+      defaultMessage: "remove",
+    }),
   })),
   getContext({
     updateCurrentValues: PropTypes.func,
-    getDocument: PropTypes.func
+    getDocument: PropTypes.func,
   })
 )(UploadInputContainer);
 
@@ -357,19 +358,19 @@ registerComponent({ name: "UploadInputLayout", component: UploadInputLayout });
 registerComponent({ name: "UploadInputLabel", component: UploadInputLabel });
 registerComponent({
   name: "UploadInputDropZoneContent",
-  component: UploadInputDropZoneContent
+  component: UploadInputDropZoneContent,
 });
 registerComponent({
   name: "UploadInputErrorMessage",
-  component: UploadInputErrorMessage
+  component: UploadInputErrorMessage,
 });
 registerComponent({
   name: "UploadInputInner",
   component: UploadInput,
-  hocs: [withComponents]
+  hocs: [withComponents],
 });
 export default registerComponent({
   name: "UploadInput",
   component: WrappedUploadInputContainer,
-  hocs: [withComponents]
+  hocs: [withComponents],
 });
