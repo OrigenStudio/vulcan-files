@@ -43,7 +43,7 @@ const UploadInputErrorMessage = ({ errrorMessage }) => (
 );
 
 // Full input
-const UploadInput = props => {
+const UploadInput = (props) => {
   const {
     FileRender,
     selectOrDropFilesMessage = "Drop a file here, or click to select an file to upload.",
@@ -59,6 +59,7 @@ const UploadInput = props => {
     clearFile,
     dropZoneProps,
     Components,
+    document,
   } = props;
 
   const {
@@ -182,7 +183,7 @@ class UploadInputContainer extends PureComponent {
   static defaultProps = {
     fileCheck: stubTrue,
     previewFromValue: () => "",
-    previewFromFile: value => ({
+    previewFromFile: (value) => ({
       name: get(value, "name", ""),
       url: get(value, "preview", ""),
     }),
@@ -200,7 +201,7 @@ class UploadInputContainer extends PureComponent {
   /*
   When an file is uploaded
   */
-  onDrop = files => {
+  onDrop = (files) => {
     // Reset error state
     this.setState({
       errorMessage: null,
@@ -208,8 +209,8 @@ class UploadInputContainer extends PureComponent {
 
     // Check that files are valid
     const errors = reject(
-      map(files, file => this.props.fileCheck(file)),
-      check => check === true
+      map(files, (file) => this.props.fileCheck(file)),
+      (check) => check === true
     );
     // TODO add max files
 
@@ -261,7 +262,7 @@ class UploadInputContainer extends PureComponent {
   /*
   Remove the file at `index` (or just remove file if no index is passed)
   */
-  clearFile = index => {
+  clearFile = (index) => {
     const value = this.enableMultiple()
       ? get(this.props.value, index)
       : this.props.value;
@@ -297,11 +298,14 @@ class UploadInputContainer extends PureComponent {
       dropZoneProps = {},
       label,
       Components,
+      document,
     } = this.props;
+
     const { uploading, errorMessage } = this.state;
     const { UploadInputInner } = Components;
     return (
       <UploadInputInner
+        document={document}
         FileRender={FileRender}
         selectOrDropFilesMessage={selectOrDropFilesMessage}
         uploadingMessage={uploadingMessage}
