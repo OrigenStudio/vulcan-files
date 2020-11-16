@@ -98,9 +98,31 @@ const UploadInput = (props) => {
               }}
               {...dropZoneProps}
             >
-              <UploadInputDropZoneContent
-                selectOrDropFilesMessage={selectOrDropFilesMessage}
-              />
+              {({
+                getRootProps,
+                getInputProps,
+                isDragActive,
+                isDragReject,
+              }) => (
+                <section>
+                  <div
+                    {...getRootProps()}
+                    style={{
+                      height: "100px",
+                      borderColor: "rgb(128, 128, 128)",
+                      borderWidth: "2px",
+                      backgroundColor: "rgb(225, 225, 225)",
+                      borderStyle: "dashed",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <input {...getInputProps()} />{" "}
+                    <UploadInputDropZoneContent
+                      selectOrDropFilesMessage={selectOrDropFilesMessage}
+                    />
+                  </div>
+                </section>
+              )}
             </Dropzone>
           ) : null}
 
