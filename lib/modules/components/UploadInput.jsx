@@ -30,7 +30,7 @@ const UploadInputDropZoneContent = ({ selectOrDropFilesMessage }) => (
     {/* Translate */}
   </div>
 );
-const UploadInputErrorMessage = ({ errrorMessage }) => (
+const UploadInputErrorMessage = ({ errorMessage }) => (
   <div
     style={{
       display: "flex",
